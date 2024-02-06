@@ -2,13 +2,13 @@ version: "3.9"
 
 services:
   client:
-    image: onroadclient:latest
+    image: ghcr.io/malikbagwala/onroad/client:${VERSION:-latest}
     container_name: or_client
     build:
       context: ./client
       dockerfile: Dockerfile.client
-      # tags:
-      #   - registry.digitalocean.com/or-main/client:latest
+      tags:
+        - ghcr.io/malikbagwala/onroad/client:${COMMIT:-latest}
       args:
         - API_DOMAIN=${DOMAIN_NAME}
         - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
@@ -19,12 +19,12 @@ services:
       - caddy
 
   django:
-    image: onroadapi:latest
+    image: ghcr.io/malikbagwala/onroad/api:${VERSION:-latest}
     container_name: or_django
     build:
       dockerfile: ./Dockerfile.api
-      # tags:
-      #   - registry.digitalocean.com/or-main/api:latest
+      tags:
+        - ghcr.io/malikbagwala/onroad/api:${COMMIT:-latest}
     restart: unless-stopped
     env_file:
       - ./.env
@@ -35,12 +35,12 @@ services:
       - caddy
 
   worker:
-    image: onroadapi:latest
+    image: ghcr.io/malikbagwala/onroad/api:${VERSION:-latest}
     container_name: or_worker
     build:
       dockerfile: ./Dockerfile.api
-      # tags:
-      #   - registry.digitalocean.com/or-main/api:latest
+      tags:
+        - ghcr.io/malikbagwala/onroad/api:${COMMIT:-latest}
     command: python manage.py rundramatiq
     restart: unless-stopped
     env_file:
@@ -52,13 +52,13 @@ services:
       - rabbitmq
 
   caddy:
+    image: ghcr.io/malikbagwala/onroad/caddy:${VERSION:-latest}
     restart: unless-stopped
-    image: onroadcaddy:latest
     build:
       context: ./caddy
       dockerfile: Dockerfile.caddy
-      # tags:
-      #   - registry.digitalocean.com/or-main/caddy:latest
+      tags:
+        - ghcr.io/malikbagwala/onroad/caddy:${COMMIT:-latest}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -96,13 +96,13 @@ services:
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
 
   hasura:
+    image: ghcr.io/malikbagwala/onroad/hasura:${VERSION:-latest}
     container_name: or_hasura
-    image: onroadhasura:latest
     build:
       context: ./hasura
       dockerfile: Dockerfile.hasura
-      # tags:
-      #   - registry.digitalocean.com/or-main/hasura:latest
+      tags:
+        - ghcr.io/malikbagwala/onroad/hasura:${COMMIT:-latest}
     restart: unless-stopped
     depends_on:
       - "db"
