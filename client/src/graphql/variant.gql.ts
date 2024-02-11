@@ -135,17 +135,43 @@ export const VARIANT_DETAIL = graphql(/* GraphQL */ `
           }
         }
       }
-      contributions_aggregate(
+      contributions(
         order_by: { created_at: desc, upvotes: desc }
-        limit: 5
+        limit: 1
         where: $contributions_where
       ) {
-        aggregate {
-          avg {
-            total
-            upvotes
-            downvotes
+        id
+        total
+        upvotes
+        downvotes
+        items(order_by: { price_item: { serial_no: asc_nulls_last } }) {
+          id
+          price_item {
+            id
+            name
+            type
+            category
           }
+        }
+      }
+    }
+  }
+`);
+
+export const VARIANT_CONTRIBUTIONS = graphql(/* GraphQL */ `
+  query VariantContributions($where: contributions_bool_exp) {
+    contributions(order_by: { created_at: desc, upvotes: desc }, where: $where) {
+      id
+      total
+      upvotes
+      downvotes
+      items(order_by: { price_item: { serial_no: asc_nulls_last } }) {
+        id
+        price_item {
+          id
+          name
+          type
+          category
         }
       }
     }
