@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query currentUser {\n    users {\n      id\n      email\n      username\n      first_name\n      last_name\n      avatar\n      has_contributed\n      email_verified\n      google_id\n      passkeys {\n        id\n        credential_id\n        created_at\n        updated_at\n        description\n      }\n      tokens {\n        id\n        client\n        expires_at\n        created_at\n      }\n      city {\n        id\n        name\n        state {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.CurrentUserDocument,
-    "\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data\n    }\n  }\n": types.MembershipTypeByEmailDocument,
+    "\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data {\n        type\n        passkeys\n      }\n    }\n  }\n": types.MembershipTypeByEmailDocument,
     "\n  mutation login($email: String!, $password: String!) {\n    login(email: $email, password: $password) {\n      code\n      data {\n        accessToken\n        refreshToken\n      }\n      message\n    }\n  }\n": types.LoginDocument,
     "\n  mutation loginWithMagicLink($email: String!) {\n    loginWithMagicLink(email: $email) {\n      code\n      data\n      message\n    }\n  }\n": types.LoginWithMagicLinkDocument,
     "\n  mutation register($input: RegisterInput!) {\n    register(input: $input) {\n      data {\n        user {\n          id\n          email\n        }\n        tokens {\n          accessToken\n          refreshToken\n        }\n      }\n      success\n      message\n      errors\n    }\n  }\n": types.RegisterDocument,
@@ -69,7 +69,7 @@ export function graphql(source: "\n  query currentUser {\n    users {\n      id\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data\n    }\n  }\n"): (typeof documents)["\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data\n    }\n  }\n"];
+export function graphql(source: "\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data {\n        type\n        passkeys\n      }\n    }\n  }\n"): (typeof documents)["\n  query membershipTypeByEmail($email: String!) {\n    membershipTypeByEmail(email: $email) {\n      message\n      data {\n        type\n        passkeys\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

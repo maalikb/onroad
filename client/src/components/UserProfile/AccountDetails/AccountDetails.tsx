@@ -1,4 +1,4 @@
-import { useAuth, useCurrentUser } from '@/authentication/AuthContext';
+import { useCurrentUser } from '@/authentication/AuthContext';
 import {
   DELETE_USER_PASSKEYS,
   DELETE_USER_TOKENS,
@@ -7,7 +7,6 @@ import {
   VERIFY_PASSKEY_REGISTERATION,
 } from '@/graphql/auth.gql';
 import signinWithGoogleLink from '@/utils/signinWithGoogleLink';
-import { setAccessToken, setRefreshToken } from '@/utils/tokens';
 import {
   ActionIcon,
   Button,

@@ -41,7 +41,10 @@ export const MEMBERSHIP_TYPE = graphql(/* GraphQL */ `
   query membershipTypeByEmail($email: String!) {
     membershipTypeByEmail(email: $email) {
       message
-      data
+      data {
+        type
+        passkeys
+      }
     }
   }
 `);
