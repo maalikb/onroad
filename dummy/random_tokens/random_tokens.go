@@ -32,7 +32,7 @@ func main() {
 	}
 
 	// Write the header row to user_tokens.csv
-	header := []string{"created_at", "updated_at", "id", "token", "used", "expires_at", "type", "user_id", "client", "description"}
+	header := []string{"id", "token", "used", "expires_at", "type", "user_id", "client"}
 	if err := tokensWriter.Write(header); err != nil {
 		panic(fmt.Sprintf("Failed to write header to user_tokens.csv: %v", err))
 	}
@@ -46,14 +46,14 @@ func main() {
 
 		userID := record[0] // Assuming the first column is user ID
 
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 5; i++ {
 			tokenID := uuid.New().String()
 			token := uuid.New().String()
 			used := "false"
 			tokenType := "VC"
 			client := "web"
-
-			tokenRecord := []string{"", "", tokenID, token, used, "", tokenType, userID, client, ""}
+			expiresAt := "2025-01-01T00:00:00.000Z"
+			tokenRecord := []string{tokenID, token, used, expiresAt, tokenType, userID, client}
 			if err := tokensWriter.Write(tokenRecord); err != nil {
 				panic(fmt.Sprintf("Failed to write token record to user_tokens.csv: %v", err))
 			}
@@ -65,3 +65,5 @@ func main() {
 		panic(fmt.Sprintf("Failed to flush to user_tokens.csv: %v", err))
 	}
 }
+
+// COPY users(id, token, used, expires_at, type, user_id, client) FROM '/user_tokens.csv' DELIMITER ',' CSV HEADER;

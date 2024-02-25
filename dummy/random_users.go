@@ -2,46 +2,68 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 
 	"github.com/google/uuid"
 )
 
 func main() {
-	// Open a file for writing
-	file, err := os.Create("users.csv")
+	// Open the users.csv file
+	usersFile, err := os.Open("users.csv")
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to open users.csv: %v", err))
 	}
-	defer file.Close()
+	defer usersFile.Close()
 
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
+	// Create the user_tokens.csv file
+	tokensFile, err := os.Create("user_tokens.csv")
+	if err != nil {
+		panic(fmt.Sprintf("Failed to create user_tokens.csv: %v", err))
+	}
+	defer tokensFile.Close()
 
-	// Write the header row
-	header := []string{"id", "username", "password", "email", "is_active", "is_staff", "is_superuser", "date_joined", "city_id", "email_verified", "has_contributed"}
-	if err := writer.Write(header); err != nil {
-		panic("Failed to write header to CSV file")
+	usersReader := csv.NewReader(usersFile)
+	tokensWriter := csv.NewWriter(tokensFile)
+
+	// Skip the header row of the users.csv
+	if _, err := usersReader.Read(); err != nil {
+		panic(fmt.Sprintf("Failed to read header from users.csv: %v", err))
 	}
 
-	// Generate 10 million user records
-	for i := 0; i < 10000000; i++ {
-		id := uuid.New().String()
-		email := id + "@maalik.dev"
-		username := "user_" + id
-		password := "a"
-		is_active := "true"
-		is_staff := "false"
-		city_id := "713b7600-4c05-48fc-86d1-31974c747ce3"
-		email_verified := "true"
-		has_contributed := "true"
-		is_superuser := "false"
-		date_joined := "2024-02-25T06:59:18.580Z"
-		record := []string{id, username, password, email, is_active, is_staff, is_superuser, date_joined, city_id, email_verified, has_contributed}
-		if err := writer.Write(record); err != nil {
-			panic("Failed to write record to CSV file")
+	// Write the header row to user_tokens.csv
+	header := []string{"id", "token", "used", "expires_at", "type", "user_id", "client"}
+	if err := tokensWriter.Write(header); err != nil {
+		panic(fmt.Sprintf("Failed to write header to user_tokens.csv: %v", err))
+	}
+
+	// Read each user from users.csv and generate 10 tokens for each
+	for {
+		record, err := usersReader.Read()
+		if err != nil {
+			break // Stop at EOF
 		}
+
+		userID := record[0] // Assuming the first column is user ID
+
+		for i := 0; i < 5; i++ {
+			tokenID := uuid.New().String()
+			token := uuid.New().String()
+			used := "false"
+			tokenType := "VC"
+			client := "web"
+			expiresAt := "2025-01-01T00:00:00.000Z"
+			tokenRecord := []string{tokenID, token, used, expiresAt, tokenType, userID, client}
+			if err := tokensWriter.Write(tokenRecord); err != nil {
+				panic(fmt.Sprintf("Failed to write token record to user_tokens.csv: %v", err))
+			}
+		}
+	}
+
+	tokensWriter.Flush()
+	if err := tokensWriter.Error(); err != nil {
+		panic(fmt.Sprintf("Failed to flush to user_tokens.csv: %v", err))
 	}
 }
 
-// COPY users(id, username, password, email, is_active, is_staff, is_superuser, date_joined, city_id, email_verified, has_contributed) FROM '/users.csv' DELIMITER ',' CSV HEADER;
+// COPY users(id, token, used, expires_at, type, user_id, client) FROM '/user_tokens.csv' DELIMITER ',' CSV HEADER;
