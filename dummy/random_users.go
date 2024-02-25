@@ -19,7 +19,7 @@ func main() {
 	defer writer.Flush()
 
 	// Write the header row
-	header := []string{"id", "username", "password", "email", "is_active", "is_staff", "city_id", "email_verified", "has_contributed"}
+	header := []string{"id", "username", "password", "email", "is_active", "is_staff", "is_superuser", "date_joined", "city_id", "email_verified", "has_contributed"}
 	if err := writer.Write(header); err != nil {
 		panic("Failed to write header to CSV file")
 	}
@@ -29,16 +29,19 @@ func main() {
 		id := uuid.New().String()
 		email := id + "@maalik.dev"
 		username := "user_" + id
-		password := ""
+		password := "a"
 		is_active := "true"
 		is_staff := "false"
 		city_id := "713b7600-4c05-48fc-86d1-31974c747ce3"
 		email_verified := "true"
 		has_contributed := "true"
-
-		record := []string{id, username, password, email, is_active, is_staff, city_id, email_verified, has_contributed}
+		is_superuser := "false"
+		date_joined := "2024-02-25T06:59:18.580Z"
+		record := []string{id, username, password, email, is_active, is_staff, is_superuser, date_joined, city_id, email_verified, has_contributed}
 		if err := writer.Write(record); err != nil {
 			panic("Failed to write record to CSV file")
 		}
 	}
 }
+
+// COPY users(id, username, password, email, is_active, is_staff, is_superuser, date_joined, city_id, email_verified, has_contributed) FROM '/users.csv' DELIMITER ',' CSV HEADER;
