@@ -7,7 +7,9 @@ if [ "$RUN_MIGRATIONS" != "0" ]; then
     python manage.py migrate
 fi
 
-python manage.py createadmin
+if [ "$CREATE_SUPERUSER" != "0" ]; then
+    python manage.py createadmin
+fi
 
 if [ "$ENVIRONMENT" = "production" ]; then
     gunicorn onroad.wsgi:application --bind 0.0.0.0:9000 --workers=3
