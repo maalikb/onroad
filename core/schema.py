@@ -5,6 +5,7 @@ from core.mutations.passkey_register_options import (
     passkey_register_options,
     PasskeyRegisterOptions,
 )
+from core.mutations.create_vehicle import CreateVehicleResponse, create_vehicle
 
 from core.mutations.passkey_auth_options import (
     passkey_auth_options,
@@ -122,6 +123,11 @@ class Mutation:
     )
     auth_code_exchange: AuthCodeExchangeResponse = strawberry.field(
         resolver=auth_code_exchange
+    )
+    create_vehicle: CreateVehicleResponse = strawberry.field(
+        resolver=create_vehicle,
+        permission_classes=[IsAuthenticated],
+        description="Create a new vehicle with AI-powered information parsing",
     )
 
     pass

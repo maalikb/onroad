@@ -17,15 +17,17 @@ pyjwt = "*"
 django-dramatiq = "*"
 python-dotenv = "*"
 pillow = "*"
-requests = "*"
 boto3 = "*"
 webauthn = "*"
 sentry-sdk = {extras = ["django"], version = "*"}
 dramatiq = {extras = ["watch", "redis", "rabbitmq"], version = "*"}
+openai = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 black = "*"
 
 [requires]
 python_version = "3.12"
-python_full_version = "3.12.0"
+python_full_version = "3.12.*"
